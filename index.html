@@ -39,7 +39,9 @@ html, body { height: 100%; overflow: hidden; margin: 0; }
   pointer-events: auto;
   z-index: 1;
 }
-.slide-content { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; max-height: 100%; overflow: hidden; padding: var(--slide-padding); }
+.slide-content { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: flex-start; max-height: 100%; overflow: hidden; padding: var(--slide-padding); }
+.slide-content > .floor { margin-top: auto; flex-shrink: 0; }
+.slide-content > .masthead { flex-shrink: 0; }
 :root {
   --slide-padding: clamp(1.4rem, 4vw, 4rem);
   --content-gap: clamp(0.8rem, 2vw, 2rem);
