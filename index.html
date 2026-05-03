@@ -69,10 +69,14 @@ html, body { height: 100%; overflow: hidden; margin: 0; }
   z-index: 5;
 }
 .slide-content:not(.cover-content) {
-  padding-top: calc(var(--slide-padding) + clamp(4.5rem, 7vw, 6rem));
-  padding-bottom: calc(var(--slide-padding) + clamp(4.5rem, 7vw, 6rem));
+  padding-top: calc(var(--slide-padding) + clamp(2.8rem, 4.5vw, 3.6rem));
+  padding-bottom: calc(var(--slide-padding) + clamp(2.8rem, 4.5vw, 3.6rem));
 }
 .slide-content > * { min-height: 0; }
+/* Stop card-children from shrinking and clipping their own descriptions; clip
+   any overflow at the stack level instead so it never bleeds into masthead/floor */
+.goals-stack, .moments, .next-list, .home-prompts { overflow: hidden; }
+.goal-card, .moment, .next-item, .prompt { flex-shrink: 0; }
 :root {
   --slide-padding: clamp(1.4rem, 4vw, 4rem);
   --content-gap: clamp(0.8rem, 2vw, 2rem);
@@ -104,17 +108,17 @@ img, .image-container { max-width: 100%; max-height: min(50vh, 400px); object-fi
   --halo: radial-gradient(circle at 50% 50%, rgba(226, 154, 120, 0.30) 0%, rgba(226, 154, 120, 0.08) 50%, rgba(226, 154, 120, 0) 75%);
 
   /* Typography scale */
-  --cover-title: clamp(3.4rem, 9.5vw, 8.5rem);
-  --slide-title: clamp(2.4rem, 5.2vw, 4.4rem);
-  --section-title: clamp(1.7rem, 3.2vw, 2.6rem);
-  --eyebrow: clamp(1rem, 1.55vw, 1.4rem);
-  --dek: clamp(1.3rem, 2vw, 1.85rem);
-  --body: clamp(1.05rem, 1.55vw, 1.4rem);
-  --body-lg: clamp(1.2rem, 1.8vw, 1.6rem);
-  --small: clamp(0.9rem, 1.25vw, 1.15rem);
-  --tiny: clamp(0.8rem, 1.1vw, 1rem);
-  --stat-num-cover: clamp(1.9rem, 3.3vw, 2.9rem);
-  --stat-num-big: clamp(3.6rem, 7.5vw, 6.5rem);
+  --cover-title: clamp(3.2rem, 8.5vw, 7.5rem);
+  --slide-title: clamp(2rem, 4.4vw, 3.6rem);
+  --section-title: clamp(1.4rem, 2.6vw, 2.1rem);
+  --eyebrow: clamp(0.9rem, 1.4vw, 1.25rem);
+  --dek: clamp(1.15rem, 1.8vw, 1.6rem);
+  --body: clamp(0.95rem, 1.4vw, 1.25rem);
+  --body-lg: clamp(1.1rem, 1.6vw, 1.4rem);
+  --small: clamp(0.85rem, 1.2vw, 1.1rem);
+  --tiny: clamp(0.78rem, 1.05vw, 0.95rem);
+  --stat-num-cover: clamp(1.7rem, 3vw, 2.6rem);
+  --stat-num-big: clamp(3rem, 6.5vw, 5.5rem);
 }
 
 * { box-sizing: border-box; }
