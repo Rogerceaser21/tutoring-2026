@@ -12,9 +12,16 @@
 /* ===========================================
    VIEWPORT-BASE.CSS - mandatory baseline
    =========================================== */
-html, body { height: 100%; overflow-x: hidden; }
-html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
-.slide { width: 100vw; height: 100vh; height: 100dvh; overflow: hidden; scroll-snap-align: start; scroll-snap-stop: always; display: flex; flex-direction: column; position: relative; }
+html, body { height: 100%; overflow: hidden; margin: 0; }
+.deck-track {
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  position: relative;
+  transition: transform 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+  will-change: transform;
+}
+.slide { width: 100vw; height: 100vh; height: 100dvh; overflow: hidden; display: flex; flex-direction: column; position: relative; }
 .slide-content { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; max-height: 100%; overflow: hidden; padding: var(--slide-padding); }
 :root {
   --slide-padding: clamp(1.4rem, 4vw, 4rem);
@@ -278,7 +285,7 @@ body {
   height: 100%;
   border-radius: 50% / 50%;
   overflow: hidden;
-  background: var(--bg-deep);
+  background: #ffffff;
   box-shadow:
     0 1px 0 rgba(255,255,255,0.6) inset,
     0 30px 60px -20px rgba(45, 38, 32, 0.22);
@@ -286,8 +293,8 @@ body {
 .portrait-img img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: 50% 22%;
+  object-fit: contain;
+  object-position: center;
   display: block;
   filter: saturate(0.95) contrast(1.02);
   max-height: none;
@@ -1172,10 +1179,14 @@ body {
    =========================================== */
 @media print {
   @page { size: 297mm 167mm; margin: 0; }
-  html, body { background: var(--bg) !important; }
+  html, body { background: var(--bg) !important; overflow: visible !important; height: auto !important; }
   body { margin: 0; }
-  .fab-pdf, .fab-reconcile, .reconcile-panel, .nav-dots { display: none !important; }
-  html { scroll-snap-type: none; }
+  .fab-cluster, .reconcile-panel, .nav-dots { display: none !important; }
+  .deck-track {
+    transform: none !important;
+    height: auto !important;
+    transition: none !important;
+  }
   .slide {
     width: 100% !important; height: auto !important;
     min-height: 167mm;
@@ -1190,6 +1201,8 @@ body {
 </style>
 </head>
 <body>
+
+<div class="deck-track" id="deck-track">
 
 <!-- ============================================
      SLIDE 1 · COVER
@@ -1629,6 +1642,8 @@ body {
   </div>
 </section>
 
+</div><!-- /deck-track -->
+
 <!-- ============================================
      FLOATING CONTROLS
      ============================================ -->
@@ -1675,83 +1690,92 @@ body {
 </nav>
 
 <script>
+  const track = document.getElementById('deck-track');
   const slides = document.querySelectorAll('.slide');
   const dots = document.querySelectorAll('.nav-dot');
+  const total = slides.length;
+  let currentSlide = 0;
+  let inputLocked = false;
 
-  // Compute the slide currently most visible in the viewport.
-  // This is the source of truth for both keyboard nav and dot highlighting.
-  function getCurrentSlideIndex() {
-    let maxVisible = 0;
-    let currentIdx = 0;
-    slides.forEach((slide, i) => {
-      const rect = slide.getBoundingClientRect();
-      const visible = Math.max(0, Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0));
-      if (visible > maxVisible) {
-        maxVisible = visible;
-        currentIdx = i;
-      }
-    });
-    return currentIdx;
-  }
-
-  function updateActiveDot() {
-    const idx = getCurrentSlideIndex();
+  // === Core navigation ====================================================
+  // Move the deck-track up by N viewport heights to bring slide N into view.
+  // Each goTo is one discrete step. inputLocked prevents inertia from
+  // triggering multiple advances per gesture.
+  function goTo(idx) {
+    idx = Math.max(0, Math.min(total - 1, idx));
+    if (idx === currentSlide) return;
+    currentSlide = idx;
+    track.style.transform = `translateY(-${idx * 100}dvh)`;
+    slides[idx].classList.add('in-view');
     dots.forEach((d, i) => d.classList.toggle('active', i === idx));
   }
 
-  // Animations: trigger once when a slide enters view, never remove the class
-  // so animations don't replay when scrolling back.
-  const animObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('in-view');
-      }
-    });
-    updateActiveDot();
-  }, { threshold: 0.3 });
-
-  slides.forEach(s => animObserver.observe(s));
-  slides[0].classList.add('in-view');
-
-  // Track active dot continuously on scroll
-  let scrollTick = false;
-  window.addEventListener('scroll', () => {
-    if (!scrollTick) {
-      requestAnimationFrame(() => { updateActiveDot(); scrollTick = false; });
-      scrollTick = true;
-    }
-  }, { passive: true });
-
-  // Smooth-scroll to slide
-  function goTo(idx) {
-    idx = Math.max(0, Math.min(slides.length - 1, idx));
-    slides[idx].scrollIntoView({ behavior: 'smooth', block: 'start' });
+  function lockInput(ms) {
+    inputLocked = true;
+    setTimeout(() => { inputLocked = false; }, ms);
   }
 
-  // Nav dot click
+  // First slide animates immediately
+  slides[0].classList.add('in-view');
+
+  // === Wheel: one tick = one slide ========================================
+  window.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    if (inputLocked) return;
+    if (Math.abs(e.deltaY) < 4) return;
+    if (e.deltaY > 0) goTo(currentSlide + 1);
+    else goTo(currentSlide - 1);
+    lockInput(650);
+  }, { passive: false });
+
+  // === Touch: one swipe = one slide =======================================
+  let touchStartY = 0;
+  let touchStartX = 0;
+  window.addEventListener('touchstart', (e) => {
+    touchStartY = e.touches[0].clientY;
+    touchStartX = e.touches[0].clientX;
+  }, { passive: true });
+  window.addEventListener('touchend', (e) => {
+    if (inputLocked) return;
+    const endY = e.changedTouches[0].clientY;
+    const endX = e.changedTouches[0].clientX;
+    const dy = touchStartY - endY;
+    const dx = touchStartX - endX;
+    // only count vertical-dominant swipes of meaningful size
+    if (Math.abs(dy) < 40 || Math.abs(dy) < Math.abs(dx)) return;
+    if (dy > 0) goTo(currentSlide + 1);
+    else goTo(currentSlide - 1);
+    lockInput(650);
+  }, { passive: true });
+
+  // Block native page scroll on touchmove so the page itself doesn't shift,
+  // but allow scrolling INSIDE the reconcile panel if its content overflows.
+  window.addEventListener('touchmove', (e) => {
+    if (e.target.closest('#reconcile-panel')) return;
+    e.preventDefault();
+  }, { passive: false });
+
+  // === Nav dot click ======================================================
   dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
 
-  // Keyboard navigation: always derive current slide live from scroll position,
-  // never from a stale variable, so you can keep going past slide 2.
+  // === Keyboard ===========================================================
   document.addEventListener('keydown', (e) => {
-    // Don't intercept keystrokes inside form fields if any are added later
     const tag = (e.target.tagName || '').toLowerCase();
     if (tag === 'input' || tag === 'textarea') return;
 
-    const current = getCurrentSlideIndex();
     switch (e.key) {
       case 'ArrowDown':
       case 'ArrowRight':
       case 'PageDown':
       case ' ':
         e.preventDefault();
-        goTo(current + 1);
+        goTo(currentSlide + 1);
         break;
       case 'ArrowUp':
       case 'ArrowLeft':
       case 'PageUp':
         e.preventDefault();
-        goTo(current - 1);
+        goTo(currentSlide - 1);
         break;
       case 'Home':
         e.preventDefault();
@@ -1759,7 +1783,7 @@ body {
         break;
       case 'End':
         e.preventDefault();
-        goTo(slides.length - 1);
+        goTo(total - 1);
         break;
       case 'Escape':
         document.getElementById('reconcile-panel').classList.remove('open');
@@ -1768,7 +1792,7 @@ body {
     }
   });
 
-  // Reconcile Payment toggle
+  // === Reconcile Payment toggle ===========================================
   const reconcileBtn = document.getElementById('reconcile-btn');
   const reconcilePanel = document.getElementById('reconcile-panel');
   reconcileBtn.addEventListener('click', (e) => {
@@ -1776,7 +1800,6 @@ body {
     const open = reconcilePanel.classList.toggle('open');
     reconcileBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
   });
-  // Click outside the panel closes it
   document.addEventListener('click', (e) => {
     if (!reconcilePanel.contains(e.target) && e.target !== reconcileBtn) {
       reconcilePanel.classList.remove('open');
