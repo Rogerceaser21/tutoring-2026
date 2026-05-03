@@ -14,8 +14,8 @@
    =========================================== */
 html, body { height: 100%; overflow-x: hidden; }
 html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
-.slide { width: 100vw; height: 100vh; height: 100dvh; overflow: hidden; scroll-snap-align: start; display: flex; flex-direction: column; position: relative; }
-.slide-content { flex: 1; display: flex; flex-direction: column; justify-content: center; max-height: 100%; overflow: hidden; padding: var(--slide-padding); }
+.slide { width: 100vw; height: 100vh; height: 100dvh; overflow: hidden; scroll-snap-align: start; scroll-snap-stop: always; display: flex; flex-direction: column; position: relative; }
+.slide-content { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; max-height: 100%; overflow: hidden; padding: var(--slide-padding); }
 :root {
   --slide-padding: clamp(1.4rem, 4vw, 4rem);
   --content-gap: clamp(0.8rem, 2vw, 2rem);
@@ -46,18 +46,18 @@ img, .image-container { max-width: 100%; max-height: min(50vh, 400px); object-fi
   --rule-soft: rgba(45, 38, 32, 0.08);
   --halo: radial-gradient(circle at 50% 50%, rgba(226, 154, 120, 0.30) 0%, rgba(226, 154, 120, 0.08) 50%, rgba(226, 154, 120, 0) 75%);
 
-  /* Typography scale, ~doubled */
-  --cover-title: clamp(4.5rem, 13vw, 11rem);
-  --slide-title: clamp(2.6rem, 5.6vw, 4.8rem);
-  --section-title: clamp(1.8rem, 3.4vw, 2.8rem);
+  /* Typography scale */
+  --cover-title: clamp(3.4rem, 9.5vw, 8.5rem);
+  --slide-title: clamp(2.4rem, 5.2vw, 4.4rem);
+  --section-title: clamp(1.7rem, 3.2vw, 2.6rem);
   --eyebrow: clamp(1rem, 1.55vw, 1.4rem);
-  --dek: clamp(1.5rem, 2.3vw, 2.1rem);
-  --body: clamp(1.15rem, 1.65vw, 1.5rem);
-  --body-lg: clamp(1.3rem, 1.9vw, 1.7rem);
-  --small: clamp(0.95rem, 1.3vw, 1.2rem);
-  --tiny: clamp(0.85rem, 1.15vw, 1.05rem);
-  --stat-num-cover: clamp(2.6rem, 4.6vw, 4rem);
-  --stat-num-big: clamp(4.5rem, 9vw, 8rem);
+  --dek: clamp(1.3rem, 2vw, 1.85rem);
+  --body: clamp(1.05rem, 1.55vw, 1.4rem);
+  --body-lg: clamp(1.2rem, 1.8vw, 1.6rem);
+  --small: clamp(0.9rem, 1.25vw, 1.15rem);
+  --tiny: clamp(0.8rem, 1.1vw, 1rem);
+  --stat-num-cover: clamp(1.9rem, 3.3vw, 2.9rem);
+  --stat-num-big: clamp(3.6rem, 7.5vw, 6.5rem);
 }
 
 * { box-sizing: border-box; }
@@ -164,9 +164,10 @@ body {
 .cover-content {
   display: grid;
   grid-template-columns: 1.05fr 0.95fr;
-  grid-template-rows: auto 1fr auto;
-  gap: clamp(1.6rem, 3vw, 2.6rem);
-  padding: clamp(2.2rem, 4.5vw, 4.5rem);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: clamp(1.2rem, 2.4vw, 2rem);
+  padding: clamp(1.6rem, 3.5vw, 3.6rem);
+  min-height: 0;
 }
 .cover-top {
   grid-column: 1 / -1;
@@ -189,8 +190,9 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: clamp(1.1rem, 1.8vw, 1.6rem);
+  gap: clamp(0.8rem, 1.5vw, 1.3rem);
   padding-right: clamp(0.8rem, 2vw, 1.6rem);
+  min-height: 0;
 }
 .cover-title {
   font-family: 'Fraunces', Georgia, serif;
@@ -242,11 +244,14 @@ body {
   align-items: center;
   justify-content: center;
   position: relative;
+  min-height: 0;
+  overflow: hidden;
 }
 .portrait-wrap {
   position: relative;
-  width: clamp(280px, 36vw, 460px);
+  height: clamp(220px, 52vh, 420px);
   aspect-ratio: 3 / 4;
+  max-width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -308,12 +313,12 @@ body {
   grid-row: 3;
   display: flex;
   flex-direction: column;
-  gap: clamp(1rem, 1.8vw, 1.6rem);
+  gap: clamp(0.7rem, 1.4vw, 1.2rem);
 }
 .cover-stats {
   display: flex;
   align-items: baseline;
-  gap: clamp(1.2rem, 2.6vw, 2.6rem);
+  gap: clamp(1rem, 2.2vw, 2.2rem);
   flex-wrap: wrap;
 }
 .cstat { display: flex; align-items: baseline; gap: 0.5em; }
@@ -339,7 +344,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: clamp(0.8rem, 1.5vw, 1.3rem);
+  padding-top: clamp(0.6rem, 1.2vw, 1rem);
   border-top: 1px solid var(--rule);
   font-size: var(--small);
   letter-spacing: 0.16em;
@@ -1151,10 +1156,12 @@ body {
    RESPONSIVE
    =========================================== */
 @media (max-width: 880px) {
-  .cover-content { grid-template-columns: 1fr; }
+  .cover-content { grid-template-columns: 1fr; grid-template-rows: auto auto auto auto; }
   .cover-hero { grid-column: 1; grid-row: 2; padding-right: 0; }
   .portrait-stage { grid-column: 1; grid-row: 3; }
+  .portrait-wrap { height: clamp(180px, 32vh, 280px); }
   .cover-bottom { grid-row: 4; }
+  .cover-title { font-size: clamp(2.8rem, 14vw, 5.5rem); }
   .glance-tiles, .gallery, .subjects-grid, .home-content, .subject-content { grid-template-columns: 1fr; }
   .glance-hero { flex-direction: column; align-items: flex-start; }
   .nav-dots { display: none; }
