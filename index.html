@@ -39,9 +39,41 @@ html, body { height: 100%; overflow: hidden; margin: 0; }
   pointer-events: auto;
   z-index: 1;
 }
-.slide-content { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: flex-start; max-height: 100%; overflow: hidden; padding: var(--slide-padding); }
-.slide-content > .floor { margin-top: auto; flex-shrink: 0; }
-.slide-content > .masthead { flex-shrink: 0; }
+.slide-content {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-height: 100%;
+  overflow: hidden;
+  padding: var(--slide-padding);
+  position: relative;
+}
+/* Pin masthead + floor as absolute elements — IDENTICAL position on every slide */
+.slide-content > .masthead {
+  position: absolute;
+  top: var(--slide-padding);
+  left: var(--slide-padding);
+  right: var(--slide-padding);
+  margin: 0;
+  z-index: 5;
+}
+.slide-content > .floor {
+  position: absolute;
+  bottom: var(--slide-padding);
+  left: var(--slide-padding);
+  right: var(--slide-padding);
+  margin: 0;
+  z-index: 5;
+}
+/* Reserve space at top/bottom of slide-content so middle content doesn't slide under masthead/floor */
+.slide-content {
+  padding-top: calc(var(--slide-padding) + clamp(2.4rem, 4vw, 3.4rem));
+  padding-bottom: calc(var(--slide-padding) + clamp(2.4rem, 4vw, 3.4rem));
+}
+/* All direct flex children can shrink so overflow doesn't displace the layout */
+.slide-content > * { min-height: 0; }
 :root {
   --slide-padding: clamp(1.4rem, 4vw, 4rem);
   --content-gap: clamp(0.8rem, 2vw, 2rem);
