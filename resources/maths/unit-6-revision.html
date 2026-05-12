@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 6 Revision - Patterns &amp; Algorithms</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600&family=Fredoka:wght@400;500;600&display=swap');
+  :root{--bg:#FAFAF7;--card-bg:#FFF;--text:#2C2C2A;--text-secondary:#73726C;--text-hint:#9C9A92;--border:#E8E6DF;--purple-50:#EEEDFE;--purple-200:#AFA9EC;--purple-600:#534AB7;--purple-800:#3C3489;--teal-50:#E1F5EE;--teal-200:#5DCAA5;--teal-600:#0F6E56;--teal-800:#085041;--coral-50:#FAECE7;--coral-200:#F0997B;--coral-600:#D85A30;--coral-800:#712B13;--amber-50:#FAEEDA;--amber-200:#EF9F27;--amber-600:#BA7517;--amber-800:#633806;--blue-50:#E6F1FB;--blue-200:#85B7EB;--blue-600:#378ADD;--blue-800:#0C447C;--green-50:#EAF3DE;--green-200:#97C459;--green-600:#639922;--green-800:#27500A;--radius:16px;--radius-sm:10px;--answer-bg:#FFFDF5;--answer-border:#F0E6C8}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;padding:0 0 5rem}
+  .hero{background:linear-gradient(135deg,#534AB7 0%,#378ADD 50%,#0F6E56 100%);padding:4rem 2rem 3.5rem;text-align:center;color:#fff;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 30% 40%,rgba(255,255,255,.08) 0%,transparent 50%),radial-gradient(circle at 70% 60%,rgba(255,255,255,.05) 0%,transparent 40%);pointer-events:none}
+  .hero h1{font-family:'Fredoka',sans-serif;font-size:clamp(2.4rem,6vw,3.4rem);font-weight:600;letter-spacing:-.02em;margin-bottom:.4rem;position:relative}
+  .hero p{font-size:1.3rem;opacity:.85;position:relative}
+  .nav-bar{background:var(--card-bg);border-bottom:1px solid var(--border);padding:1rem 1.25rem;position:sticky;top:0;z-index:100;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+  .nav-bar a{display:inline-block;font-size:1rem;font-weight:500;color:var(--text-secondary);text-decoration:none;padding:8px 16px;border-radius:24px;margin-right:6px;transition:all .2s;white-space:nowrap}
+  .nav-bar a:hover,.nav-bar a:focus{background:var(--purple-50);color:var(--purple-600)}
+  .container{max-width:900px;margin:0 auto;padding:0 1.25rem}
+  .slide-section{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;margin-top:2rem;scroll-margin-top:5rem}
+  .slide-header{display:flex;align-items:center;gap:14px;margin-bottom:1.75rem}
+  .slide-num{font-family:'Fredoka',sans-serif;font-size:1rem;font-weight:600;color:#fff;background:var(--purple-600);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .slide-num.teal{background:var(--teal-600)}.slide-num.coral{background:var(--coral-600)}.slide-num.amber{background:var(--amber-600)}.slide-num.blue{background:var(--blue-600)}.slide-num.green{background:var(--green-600)}
+  .slide-title{font-family:'Fredoka',sans-serif;font-size:1.6rem;font-weight:500;color:var(--text)}
+  .controls{display:flex;align-items:center;gap:14px;margin-bottom:1.75rem;flex-wrap:wrap}
+  .controls label{font-size:1.15rem;color:var(--text-secondary)}
+  .controls span.val{font-size:1.4rem;font-weight:600;min-width:28px}
+  input[type="range"]{-webkit-appearance:none;appearance:none;height:8px;border-radius:4px;background:var(--border);outline:none;flex:1;max-width:280px}
+  input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--purple-600);cursor:pointer;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+  input[type="number"]{font-family:'DM Sans',sans-serif;font-size:1.2rem;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);width:80px;text-align:center;outline:none;transition:border .2s}
+  input[type="number"]:focus{border-color:var(--purple-600)}
+  .groups-row{display:flex;gap:20px;flex-wrap:wrap;align-items:flex-end;margin-bottom:1.25rem}
+  .group-box{text-align:center;min-width:54px}
+  .group-label{font-size:.95rem;color:var(--text-hint);margin-bottom:6px}
+  .shapes{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;max-width:110px;margin:0 auto 6px}
+  .dot{width:18px;height:18px;border-radius:50%;background:var(--purple-600)}
+  .tri{width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-bottom:18px solid var(--teal-600)}
+  .count{font-size:1.15rem;font-weight:600;color:var(--text)}
+  .data-table{width:100%;border-collapse:collapse;font-size:1.05rem;margin-bottom:1.25rem}
+  .data-table th{padding:8px 10px;text-align:center;font-weight:500;color:var(--text-secondary);border-bottom:1px solid var(--border);font-size:.95rem}
+  .data-table td{padding:8px 10px;text-align:center;font-weight:600;border-bottom:1px solid var(--border)}
+  .data-table td.purple{color:var(--purple-600)}.data-table td.teal{color:var(--teal-600)}
+  .rule-box{padding:14px 18px;background:var(--bg);border-radius:var(--radius-sm);font-size:1.1rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem}
+  .rule-box strong{color:var(--text)}
+  .try-it{display:flex;align-items:center;gap:10px;margin-top:1rem;flex-wrap:wrap}
+  .try-it label{font-size:1.1rem;color:var(--text-secondary)}
+  .result{font-size:1.4rem;font-weight:600;min-width:36px}
+  .result.purple{color:var(--purple-600)}.result.teal{color:var(--teal-600)}.result.coral{color:var(--coral-600)}
+  .step-box{padding:14px 18px;background:var(--bg);border-radius:var(--radius-sm);font-size:1.1rem;color:var(--text-secondary);margin-bottom:8px;line-height:1.7}
+  .step-box strong{color:var(--text)}
+  .number-line{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem}
+  .num-box{width:62px;height:62px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);font-size:1.3rem;font-weight:600}
+  .num-given{background:var(--bg);color:var(--text);border:1px solid var(--border)}
+  .num-predicted{background:var(--purple-50);color:var(--purple-600);border:1px solid var(--purple-200)}
+  .num-arrow{font-size:1rem;color:var(--purple-600);font-weight:600}
+  .machine-box{display:flex;align-items:center;gap:16px;padding:16px 20px;background:var(--bg);border-radius:var(--radius);margin-bottom:1.25rem;border:1px solid var(--border)}
+  .machine-icon{width:56px;height:56px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:600;font-size:1.1rem;flex-shrink:0}
+  .machine-icon.teal{background:var(--teal-50);color:var(--teal-600)}.machine-icon.coral{background:var(--coral-50);color:var(--coral-600)}
+  .machine-text{font-size:1.1rem;color:var(--text)}
+  .machine-rule{font-weight:600}.machine-rule.teal{color:var(--teal-600)}.machine-rule.coral{color:var(--coral-600)}
+  .io-grid{display:grid;gap:6px;margin-bottom:1.25rem}
+  .io-cell{text-align:center;padding:10px 6px;border-radius:var(--radius-sm);font-size:1.15rem}
+  .io-header{font-weight:500;color:var(--text-secondary);background:var(--bg);font-size:.95rem}
+  .io-input{font-weight:600;color:var(--text);background:var(--bg);border:1px solid var(--border)}
+  .io-output-teal{font-weight:600;color:var(--teal-600);background:var(--teal-50);border:1px solid var(--teal-200)}
+  .io-output-coral{font-weight:600;color:var(--coral-600);background:var(--coral-50);border:1px solid var(--coral-200)}
+  .io-new{font-weight:600;color:var(--purple-600);background:var(--purple-50);border:1px solid var(--purple-200)}
+  .pipe-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;padding:10px 16px;background:var(--bg);border-radius:var(--radius-sm);font-size:1.1rem}
+  .pipe-in{font-weight:600;color:var(--text);min-width:90px}.pipe-work{color:var(--text-secondary);flex:1;text-align:center}
+  .pipe-out{font-weight:600;min-width:70px;text-align:right}.pipe-out.coral{color:var(--coral-600)}
+  .reveal-btn,.answer-btn{font-family:'DM Sans',sans-serif;font-size:1.1rem;font-weight:500;padding:12px 22px;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;border:1px solid;display:inline-block}
+  .reveal-btn{color:var(--purple-600);background:var(--purple-50);border-color:var(--purple-200);margin-bottom:1rem}
+  .reveal-btn:hover{background:var(--purple-200);color:#fff}
+  .answer-btn{color:var(--amber-800);background:var(--amber-50);border-color:var(--amber-200);margin-top:1.5rem}
+  .answer-btn:hover{background:var(--amber-200);color:var(--amber-800)}
+  .answer-section{margin-top:1.25rem;padding:20px 22px;background:var(--answer-bg);border:1px solid var(--answer-border);border-radius:var(--radius)}
+  .answer-title{font-family:'Fredoka',sans-serif;font-size:1.25rem;font-weight:500;color:var(--amber-800);margin-bottom:1rem}
+  .answer-item{padding:12px 16px;background:#fff;border-radius:var(--radius-sm);border:1px solid var(--answer-border);margin-bottom:8px;font-size:1.05rem;color:var(--text-secondary);line-height:1.7}
+  .answer-item strong{color:var(--text)}
+  .answer-item .label{font-weight:600;color:var(--amber-600);display:block;margin-bottom:2px;font-size:.9rem}
+  .tt-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.25rem}
+  .tt-item{padding:8px 16px;border-radius:var(--radius-sm);font-size:1.1rem;font-weight:500;background:var(--teal-50);color:var(--teal-600);border:1px solid var(--teal-200)}
+  .reveal-box{padding:16px 20px;border-radius:var(--radius-sm);font-size:1.25rem;margin-bottom:1.25rem}
+  .reveal-box.teal{background:var(--teal-50);color:var(--teal-800);border:1px solid var(--teal-200)}
+  .reveal-box strong{color:var(--teal-600)}
+  .hidden{display:none}
+  .tables-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:1.25rem}
+  @media(max-width:600px){.tables-wrap{grid-template-columns:1fr}}
+  .table-card{background:var(--card-bg);border-radius:var(--radius-sm);border:1px solid var(--border);padding:14px}
+  .table-card-title{font-size:1.1rem;font-weight:600;margin-bottom:4px}
+  .table-card-title.teal{color:var(--teal-600)}.table-card-title.purple{color:var(--purple-600)}
+  .table-card-rule{font-size:.95rem;color:var(--text-secondary);margin-bottom:10px}
+  .algo-table{width:100%;border-collapse:collapse;font-size:1rem}
+  .algo-table th{padding:6px;text-align:center;font-weight:500;color:var(--text-hint);font-size:.85rem;border-bottom:1px solid var(--border)}
+  .algo-table td{padding:6px;text-align:center;font-weight:600;border-bottom:1px solid var(--border)}
+  .algo-table td.teal{color:var(--teal-600)}.algo-table td.purple{color:var(--purple-600)}.algo-table td.hint{font-size:.8rem;color:var(--text-hint);font-weight:400}
+  .chart-area{height:200px;position:relative;border-left:1px solid var(--border);border-bottom:1px solid var(--border);margin:1.25rem 0 .75rem}
+  .bar-group{position:absolute;bottom:0;display:flex;gap:3px;align-items:flex-end}
+  .bar{width:16px;border-radius:4px 4px 0 0;transition:height .3s}
+  .bar-add{background:var(--teal-200)}.bar-mult{background:var(--purple-200)}
+  .chart-label{position:absolute;bottom:-20px;font-size:.85rem;color:var(--text-hint);text-align:center;width:36px}
+  .legend{display:flex;gap:18px;font-size:1rem;color:var(--text-secondary);margin-top:1.5rem}
+  .legend-dot{width:12px;height:12px;border-radius:50%;display:inline-block;margin-right:6px;vertical-align:middle}
+  .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:1.25rem}
+  @media(max-width:600px){.compare-grid{grid-template-columns:1fr}}
+  .compare-card{border-radius:var(--radius-sm);padding:18px}
+  .compare-card.teal-card{background:var(--teal-50);border:1px solid var(--teal-200)}
+  .compare-card.purple-card{background:var(--purple-50);border:1px solid var(--purple-200)}
+  .compare-card-title{font-size:1.15rem;font-weight:600;margin-bottom:6px}
+  .compare-card-title.teal{color:var(--teal-800)}.compare-card-title.purple{color:var(--purple-800)}
+  .compare-card-text{font-size:1.05rem}
+  .compare-card.teal-card .compare-card-text{color:var(--teal-600)}.compare-card.purple-card .compare-card-text{color:var(--purple-600)}
+  .jumps-visual{display:flex;align-items:flex-end;gap:4px;margin:12px 0 6px;height:100px}
+  .jump-bar{width:26px;border-radius:4px 4px 0 0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;font-size:.75rem;font-weight:600}
+  .jump-bar.teal{background:var(--teal-200);color:var(--teal-800)}.jump-bar.purple{background:var(--purple-200);color:var(--purple-800)}
+  .info-box{padding:16px 20px;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border);margin-bottom:10px}
+  .info-box-title{font-size:1.15rem;font-weight:600;color:var(--text);margin-bottom:6px}
+  .info-box-text{font-size:1.05rem;color:var(--text-secondary);line-height:1.7}
+  .tp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:1.25rem}
+  .tp-stat{background:var(--bg);border-radius:var(--radius-sm);padding:12px 16px}
+  .tp-stat-label{font-size:.9rem;color:var(--text-hint);margin-bottom:4px}
+  .tp-stat-value{font-size:1.6rem;font-weight:600;color:var(--text)}
+</style>
+</head>
+<body>
+<div class="hero"><h1>Unit 6 Revision</h1><p>Patterns &amp; Algorithms - Interactive Practice</p></div>
+<div class="nav-bar">
+  <a href="#slide1">1. Dots</a><a href="#slide2">2. Triangles</a><a href="#slide3">3. Toothpicks</a><a href="#slide4">4. Number</a><a href="#slide5">5. Input-Output</a><a href="#slide6">6. Function</a><a href="#slide7">7. Missing Rule</a><a href="#slide8">8+9. Algorithms</a><a href="#slide10">10. Compare</a>
+</div>
+<div class="container">
+
+<!-- SLIDE 1 -->
+<div class="slide-section" id="slide1">
+<div class="slide-header"><div class="slide-num">1</div><div class="slide-title">Shape pattern (dots)</div></div>
+<div class="controls"><label>Show groups 1 to</label><input type="range" min="1" max="10" value="4" id="s1slider" oninput="updateS1(this.value)"><span class="val" id="s1count">4</span></div>
+<div class="groups-row" id="s1groups"></div>
+<div style="overflow-x:auto"><table class="data-table" id="s1table"></table></div>
+<div class="rule-box" id="s1rule"></div>
+<div class="try-it"><label>How many dots in group</label><input type="number" id="s1nth" value="10" min="1" max="200" oninput="updateS1Nth()"><label>=</label><span class="result purple" id="s1nthResult">20</span></div>
+<button class="answer-btn" onclick="toggleAnswer('s1ans')">Show answer</button>
+<div id="s1ans" class="answer-section hidden">
+  <div class="answer-title">Answers and working out</div>
+  <div class="answer-item"><span class="label">b) Draw Group 4</span>Group 4 has <strong>8 dots</strong> (draw 8 dots arranged in pairs or rows).</div>
+  <div class="answer-item"><span class="label">c) Describe the rule</span>The rule is <strong>add 2 each time</strong>. Each group has 2 more dots than the one before. You can also write it as: <strong>number of dots = group number x 2</strong>.</div>
+  <div class="answer-item"><span class="label">d) How many dots in Group 10?</span>Use the formula: Group 10 = 10 x 2 = <strong>20 dots</strong>.<br>How to work it out: find the pattern first (each group adds 2), then either keep counting up from Group 3, or use the shortcut formula.</div>
+</div></div>
+
+<!-- SLIDE 2 -->
+<div class="slide-section" id="slide2">
+<div class="slide-header"><div class="slide-num teal">2</div><div class="slide-title">Shape pattern (triangles)</div></div>
+<div class="controls"><label>Show groups 1 to</label><input type="range" min="1" max="10" value="4" id="s2slider" oninput="updateS2(this.value)"><span class="val" id="s2count">4</span></div>
+<div class="groups-row" id="s2groups"></div>
+<div style="overflow-x:auto"><table class="data-table" id="s2table"></table></div>
+<div class="rule-box" id="s2rule"></div>
+<div class="try-it"><label>How many triangles in group</label><input type="number" id="s2nth" value="8" min="1" max="200" oninput="updateS2Nth()"><label>=</label><span class="result teal" id="s2nthResult">15</span></div>
+<button class="answer-btn" onclick="toggleAnswer('s2ans')">Show answer</button>
+<div id="s2ans" class="answer-section hidden">
+  <div class="answer-title">Answers and working out</div>
+  <div class="answer-item"><span class="label">b) Draw Group 4</span>Group 4 has <strong>7 triangles</strong>. The pattern goes 1, 3, 5, 7.</div>
+  <div class="answer-item"><span class="label">c) Explain the rule</span>The rule is <strong>add 2 each time</strong>. The outputs are all odd numbers. Formula: <strong>number of triangles = (group number x 2) - 1</strong>.</div>
+  <div class="answer-item"><span class="label">d) How many triangles in Group 8?</span>Use the formula: (8 x 2) - 1 = <strong>15 triangles</strong>.<br>How to arrive at this: spot the +2 pattern, write the formula, substitute 8.</div>
+</div></div>
+
+<!-- SLIDE 3 -->
+<div class="slide-section" id="slide3">
+<div class="slide-header"><div class="slide-num coral">3</div><div class="slide-title">Toothpick pattern (squares)</div></div>
+<div class="controls"><label>Number of squares</label><input type="range" min="1" max="12" value="3" id="s3slider" oninput="updateS3(this.value)"><span class="val" id="s3count">3</span></div>
+<div style="overflow-x:auto;padding:10px 0"><svg id="s3svg" width="100%" viewBox="0 0 680 100"></svg></div>
+<div class="tp-stats">
+  <div class="tp-stat"><div class="tp-stat-label">Squares</div><div class="tp-stat-value" id="s3statSq">3</div></div>
+  <div class="tp-stat"><div class="tp-stat-label">Toothpicks</div><div class="tp-stat-value" id="s3statTP">10</div></div>
+  <div class="tp-stat"><div class="tp-stat-label">Added</div><div class="tp-stat-value" id="s3statNew">+3</div></div>
+</div>
+<div style="overflow-x:auto"><table class="data-table" id="s3table"></table></div>
+<div class="rule-box" id="s3rule"></div>
+<div class="try-it"><label>Toothpicks for</label><input type="number" id="s3nth" value="12" min="1" max="200" oninput="updateS3Nth()"><label>squares =</label><span class="result coral" id="s3nthResult">37</span></div>
+<button class="answer-btn" onclick="toggleAnswer('s3ans')">Show answer</button>
+<div id="s3ans" class="answer-section hidden">
+  <div class="answer-title">Answers and working out</div>
+  <div class="answer-item"><span class="label">b) Draw 4 connected squares</span>4 connected squares = <strong>13 toothpicks</strong>. Each new square shares one side with the previous square, so you only add 3 new toothpicks (not 4).</div>
+  <div class="answer-item"><span class="label">c) What is the rule?</span>Start with <strong>4 toothpicks</strong> for the first square, then <strong>add 3</strong> for each new square. Formula: <strong>toothpicks = (3 x squares) + 1</strong>.</div>
+  <div class="answer-item"><span class="label">d) How many toothpicks for 12 squares?</span>(3 x 12) + 1 = <strong>37 toothpicks</strong>.<br>How to arrive at this: notice the +3 pattern, build the formula, plug in 12.</div>
+</div></div>
+
+<!-- SLIDE 4 -->
+<div class="slide-section" id="slide4">
+<div class="slide-header"><div class="slide-num amber">4</div><div class="slide-title">Number pattern</div></div>
+<div class="number-line">
+  <div class="num-box num-given">2</div><div class="num-arrow">+3</div><div class="num-box num-given">5</div><div class="num-arrow">+3</div><div class="num-box num-given">8</div><div class="num-arrow">+3</div><div class="num-box num-given">11</div><div class="num-arrow">+3</div><div class="num-box num-predicted">14</div><div class="num-arrow">+3</div><div class="num-box num-predicted">17</div>
+</div>
+<div class="step-box">Step 1: Find the difference. 5 - 2 = <strong>3</strong>, 8 - 5 = <strong>3</strong>, 11 - 8 = <strong>3</strong>. The jump is always <strong>3</strong>.</div>
+<div class="step-box">Step 2: Fill in the blanks. 11 + 3 = <strong>14</strong>, 14 + 3 = <strong>17</strong>.</div>
+<div class="rule-box" style="background:var(--amber-50);color:var(--amber-800)">Rule: <strong>Add 3</strong> each time. The 20th number = 2 + (3 x 19) = <strong>59</strong>.</div>
+<div class="try-it"><label>Find the</label><input type="number" id="s4nth" value="20" min="1" max="500" oninput="updateS4Nth()"><label>th number =</label><span class="result" style="color:var(--amber-600)" id="s4result">59</span></div>
+<button class="answer-btn" onclick="toggleAnswer('s4ans')">Show answer</button>
+<div id="s4ans" class="answer-section hidden">
+  <div class="answer-title">Answers and working out</div>
+  <div class="answer-item"><span class="label">a) Complete the pattern</span>2, 5, 8, 11, <strong>14</strong>, <strong>17</strong>.</div>
+  <div class="answer-item"><span class="label">b) What is the rule?</span><strong>Add 3</strong> each time. The difference between every pair of numbers is 3.</div>
+  <div class="answer-item"><span class="label">c) What is the 20th number?</span>Formula: start number + (rule x number of jumps) = 2 + (3 x 19) = <strong>59</strong>.<br>How to arrive at this: the 20th number means 19 jumps from the start (because the 1st number is already given). Multiply 3 x 19 = 57, then add the starting number 2.</div>
+</div></div>
+
+<!-- SLIDE 5 -->
+<div class="slide-section" id="slide5">
+<div class="slide-header"><div class="slide-num teal">5</div><div class="slide-title">Input-output table</div></div>
+<div class="machine-box"><div class="machine-icon teal">f(x)</div><div class="machine-text">The rule machine: input goes in, rule is applied, output comes out.<br><span class="machine-rule teal">Output = (Input x 3) + 1</span></div></div>
+<div class="io-grid" style="grid-template-columns:80px repeat(7,1fr)">
+  <div class="io-cell io-header">Input</div><div class="io-cell io-input">1</div><div class="io-cell io-input">2</div><div class="io-cell io-input">3</div><div class="io-cell io-input">4</div><div class="io-cell io-input">5</div><div class="io-cell io-input">6</div><div class="io-cell io-input">7</div>
+  <div class="io-cell io-header">Output</div><div class="io-cell io-output-teal">4</div><div class="io-cell io-output-teal">7</div><div class="io-cell io-output-teal">10</div><div class="io-cell io-output-teal">13</div><div class="io-cell io-new">16</div><div class="io-cell io-new">19</div><div class="io-cell io-new">22</div>
+</div>
+<div class="step-box">Step 1: Difference between outputs: 7 - 4 = <strong>3</strong>, 10 - 7 = <strong>3</strong>. The multiplier is <strong>3</strong>.</div>
+<div class="step-box">Step 2: Does multiply alone work? 1 x 3 = 3, but the output is 4. So we also need <strong>+ 1</strong>.</div>
+<div class="step-box">Step 3: Test: (2 x 3) + 1 = <strong>7</strong>. (3 x 3) + 1 = <strong>10</strong>. It works!</div>
+<div class="try-it"><label>Try any input:</label><input type="number" id="s5input" value="15" min="1" max="999" oninput="updateS5()"><label>Output =</label><span class="result teal" id="s5result">46</span></div>
+<button class="answer-btn" onclick="toggleAnswer('s5ans')">Show answer</button>
+<div id="s5ans" class="answer-section hidden">
+  <div class="answer-title">Answers and working out</div>
+  <div class="answer-item"><span class="label">a) Find the rule</span><strong>Output = (Input x 3) + 1</strong>.<br>How to find it: subtract consecutive outputs to find the multiplier (3), then check if multiply alone works. Since 1 x 3 = 3 but the output is 4, you need to add 1.</div>
+  <div class="answer-item"><span class="label">b) Complete for inputs 5, 6, 7</span>Input 5 = (5 x 3) + 1 = <strong>16</strong>. Input 6 = (6 x 3) + 1 = <strong>19</strong>. Input 7 = (7 x 3) + 1 = <strong>22</strong>.</div>
+  <div class="answer-item"><span class="label">c) Output for input 15</span>(15 x 3) + 1 = 45 + 1 = <strong>46</strong>.</div>
+</div></div>
+
+<!-- SLIDE 6 -->
+<div class="slide-section" id="slide6">
+<div class="slide-header"><div class="slide-num coral">6</div><div class="slide-title">Function rule practice</div></div>
+<div class="machine-box"><div class="machine-icon coral">f(x)</div><div class="machine-text">Given rule:<br><span class="machine-rule coral">Output = (Input x 2) + 1</span></div></div>
+<div class="pipe-row"><div class="pipe-in">Input 1</div><div class="pipe-work">(1 x 2) + 1</div><div class="pipe-out coral">= 3</div></div>
+<div class="pipe-row"><div class="pipe-in">Input 2</div><div class="pipe-work">(2 x 2) + 1</div><div class="pipe-out coral">= 5</div></div>
+<div class="pipe-row"><div class="pipe-in">Input 3</div><div class="pipe-work">(3 x 2) + 1</div><div class="pipe-out coral">= 7</div></div>
+<div class="pipe-row"><div class="pipe-in">Input 4</div><div class="pipe-work">(4 x 2) + 1</div><div class="pipe-out coral">= 9</div></div>
+<div class="io-grid" style="grid-template-columns:80px repeat(4,1fr);max-width:480px">
+  <div class="io-cell io-header">Input</div><div class="io-cell io-input">1</div><div class="io-cell io-input">2</div><div class="io-cell io-input">3</div><div class="io-cell io-input">4</div>
+  <div class="io-cell io-header">Output</div><div class="io-cell io-output-coral">3</div><div class="io-cell io-output-coral">5</div><div class="io-cell io-output-coral">7</div><div class="io-cell io-output-coral">9</div>
+</div>
+<div class="try-it"><label>Output for input</label><input type="number" id="s6input" value="20" min="1" max="999" oninput="updateS6()"><label>=</label><span class="result coral" id="s6result">41</span></div>
+<button class="answer-btn" onclick="toggleAnswer('s6ans')">Show answer</button>
+<div id="s6ans" class="answer-section hidden">
+  <div class="answer-title">Answers and working out</div>
+  <div class="answer-item"><span class="label">Complete the table</span>Input 1 = <strong>3</strong>, Input 2 = <strong>5</strong>, Input 3 = <strong>7</strong>, Input 4 = <strong>9</strong>.<br>How to do it: plug each input into the formula. For input 1: (1 x 2) + 1 = 2 + 1 = 3. Do the multiplication first, then add.</div>
+  <div class="answer-item"><span class="label">Output for input 20</span>(20 x 2) + 1 = 40 + 1 = <strong>41</strong>.</div>
+</div></div>
+
+<!-- SLIDE 7 -->
+<div class="slide-section" id="slide7">
+<div class="slide-header"><div class="slide-num teal">7</div><div class="slide-title">Find the missing rule</div></div>
+<div class="io-grid" style="grid-template-columns:80px repeat(4,1fr);max-width:480px">
+  <div class="io-cell io-header">Input</div><div class="io-cell io-input">1</div><div class="io-cell io-input">2</div><div class="io-cell io-input">3</div><div class="io-cell io-input">4</div>
+  <div class="io-cell io-header">Output</div><div class="io-cell io-output-teal">3</div><div class="io-cell io-output-teal">6</div><div class="io-cell io-output-teal">9</div><div class="io-cell io-output-teal">12</div>
+</div>
+<button class="reveal-btn" id="s7btn" onclick="revealS7()">Can you spot the rule? Tap here to check</button>
+<div id="s7steps" class="hidden">
+  <div class="step-box">Step 1: Look at the outputs: 3, 6, 9, 12. Ask yourself: <strong>what times table is this?</strong></div>
+  <div class="tt-row"><div class="tt-item">1 x 3 = 3</div><div class="tt-item">2 x 3 = 6</div><div class="tt-item">3 x 3 = 9</div><div class="tt-item">4 x 3 = 12</div></div>
+  <div class="step-box">Step 2: It's the <strong>3 times table</strong>! Every output = Input x 3.</div>
+  <div class="reveal-box teal">Rule: <strong>Output = Input x 3</strong></div>
+  <div class="try-it"><label>Output for input</label><input type="number" id="s7input" value="25" min="1" max="999" oninput="updateS7()"><label>=</label><span class="result teal" id="s7result">75</span></div>
+</div>
+<button class="answer-btn" onclick="toggleAnswer('s7ans')">Show answer</button>
+<div id="s7ans" class="answer-section hidden">
+  <div class="answer-title">Answers and working out</div>
+  <div class="answer-item"><span class="label">a) What is the rule?</span><strong>Output = Input x 3</strong>. The outputs are the 3 times table.<br>How to find it: look at the outputs and ask "is this a times table I recognise?" 3, 6, 9, 12 is clearly the 3s. Then check: does Input x 3 give each output? Yes!</div>
+  <div class="answer-item"><span class="label">b) Output for input 25</span>25 x 3 = <strong>75</strong>.</div>
+</div></div>
+
+<!-- SLIDES 8+9 -->
+<div class="slide-section" id="slide8">
+<div class="slide-header"><div class="slide-num blue">8+9</div><div class="slide-title">Addition &amp; multiplication algorithms</div></div>
+<div class="controls"><label>Pick your number:</label><input type="range" min="2" max="9" value="4" id="s8slider" oninput="updateS8(this.value)"><span class="val" id="s8num">4</span></div>
+<div class="tables-wrap">
+  <div class="table-card"><div class="table-card-title teal">Addition: + <span id="s8addNum">4</span></div><div class="table-card-rule" id="s8addRule">Rule: Output = Input + 4</div><table class="algo-table" id="s8addTable"></table></div>
+  <div class="table-card"><div class="table-card-title purple">Multiplication: x <span id="s8multNum">4</span></div><div class="table-card-rule" id="s8multRule">Rule: Output = Input x 4</div><table class="algo-table" id="s8multTable"></table></div>
+</div>
+<div style="position:relative;height:240px">
+  <div class="chart-area" id="s8chart"></div>
+  <div class="legend"><span><span class="legend-dot" style="background:var(--teal-200)"></span> Addition</span><span><span class="legend-dot" style="background:var(--purple-200)"></span> Multiplication</span></div>
+</div>
+<div class="rule-box" id="s8addPattern"></div>
+<div class="rule-box" id="s8multPattern" style="background:var(--purple-50);color:var(--purple-800)"></div>
+<button class="answer-btn" onclick="toggleAnswer('s8ans')">Show answer</button>
+<div id="s8ans" class="answer-section hidden">
+  <div class="answer-title">Answers and working out</div>
+  <div class="answer-item"><span class="label">How to complete the tables</span>Pick any number (e.g. 4). For <strong>addition</strong>, add that number to every input: 0+4=4, 1+4=5, 2+4=6, etc. For <strong>multiplication</strong>, multiply every input by that number: 0x4=0, 1x4=4, 2x4=8, etc.</div>
+  <div class="answer-item"><span class="label">Describe the addition pattern</span>The output goes up by <strong>the same amount</strong> every time. The jump between outputs is always equal to your chosen number. This is a <strong>constant</strong> increase.</div>
+  <div class="answer-item"><span class="label">Describe the multiplication pattern</span>The output goes up by <strong>more each time</strong>. The gap between outputs keeps growing. This is because you are multiplying by increasingly larger inputs.</div>
+</div></div>
+
+<!-- SLIDE 10 -->
+<div class="slide-section" id="slide10">
+<div class="slide-header"><div class="slide-num green">10</div><div class="slide-title">Compare</div></div>
+<div class="controls"><label>Using number:</label><input type="range" min="2" max="9" value="4" id="s10slider" oninput="updateS10(this.value)"><span class="val" id="s10num">4</span></div>
+<div class="compare-grid">
+  <div class="compare-card teal-card"><div class="compare-card-title teal">Addition (+ <span id="s10addNum">4</span>)</div><div class="compare-card-text">The jump between each output is always the same.</div><div class="jumps-visual" id="s10addJumps"></div></div>
+  <div class="compare-card purple-card"><div class="compare-card-title purple">Multiplication (x <span id="s10multNum">4</span>)</div><div class="compare-card-text">The jump between each output gets bigger every time.</div><div class="jumps-visual" id="s10multJumps"></div></div>
+</div>
+<div class="info-box"><div class="info-box-title">How are they similar?</div><div class="info-box-text">Both patterns increase as the input goes up. Both use the same chosen number. Both produce a predictable pattern you can continue.</div></div>
+<div class="info-box"><div class="info-box-title">How are they different?</div><div class="info-box-text" id="s10diff"></div></div>
+<button class="answer-btn" onclick="toggleAnswer('s10ans')">Show answer</button>
+<div id="s10ans" class="answer-section hidden">
+  <div class="answer-title">Answers and working out</div>
+  <div class="answer-item"><span class="label">a) How are they similar?</span>Both patterns <strong>increase</strong> as the input goes up. Both use the <strong>same number</strong> you chose. Both start from a predictable point and follow a rule you can continue.</div>
+  <div class="answer-item"><span class="label">b) How are they different?</span><strong>Addition</strong> increases by the same amount every time (constant jumps). The bars are all the same height. <strong>Multiplication</strong> increases by more and more each time (growing jumps). The bars get taller and taller. That is why multiplication grows much faster than addition.</div>
+</div></div>
+
+</div>
+<script>
+function toggleAnswer(id){var el=document.getElementById(id);var btn=el.previousElementSibling;if(el.classList.contains('hidden')){el.classList.remove('hidden');btn.textContent='Hide answer'}else{el.classList.add('hidden');btn.textContent='Show answer'}}
+function s1dots(n){return n*2}
+function updateS1(max){max=parseInt(max);document.getElementById('s1count').textContent=max;var c=document.getElementById('s1groups');c.innerHTML='';for(var g=1;g<=max;g++){var dc=s1dots(g);var h='<div class="group-box"><div class="group-label">Grp '+g+'</div><div class="shapes">';for(var i=0;i<dc;i++)h+='<div class="dot"></div>';h+='</div><div class="count">'+dc+'</div></div>';c.innerHTML+=h}var t='<tr><th>Group</th>';for(var i=1;i<=max;i++)t+='<th>'+i+'</th>';t+='</tr><tr><th>Dots</th>';for(var i=1;i<=max;i++)t+='<td class="purple">'+s1dots(i)+'</td>';t+='</tr>';document.getElementById('s1table').innerHTML=t;document.getElementById('s1rule').innerHTML='Rule: Each group adds <strong>2 more dots</strong>. Formula: Group x 2. Group 10 = 10 x 2 = <strong>20 dots</strong>.'}
+function updateS1Nth(){var n=parseInt(document.getElementById('s1nth').value)||1;document.getElementById('s1nthResult').textContent=s1dots(n)}
+updateS1(4);
+function s2tris(n){return(n*2)-1}
+function updateS2(max){max=parseInt(max);document.getElementById('s2count').textContent=max;var c=document.getElementById('s2groups');c.innerHTML='';for(var g=1;g<=max;g++){var tc=s2tris(g);var h='<div class="group-box"><div class="group-label">Grp '+g+'</div><div class="shapes">';for(var i=0;i<tc;i++)h+='<div class="tri"></div>';h+='</div><div class="count">'+tc+'</div></div>';c.innerHTML+=h}var t='<tr><th>Group</th>';for(var i=1;i<=max;i++)t+='<th>'+i+'</th>';t+='</tr><tr><th>Triangles</th>';for(var i=1;i<=max;i++)t+='<td class="teal">'+s2tris(i)+'</td>';t+='</tr>';document.getElementById('s2table').innerHTML=t;document.getElementById('s2rule').innerHTML='Rule: Each group adds <strong>2 more triangles</strong>. Formula: (Group x 2) - 1. Group 8 = (8 x 2) - 1 = <strong>15 triangles</strong>.'}
+function updateS2Nth(){var n=parseInt(document.getElementById('s2nth').value)||1;document.getElementById('s2nthResult').textContent=s2tris(n)}
+updateS2(4);
+function s3tp(n){return(n*3)+1}
+function updateS3(n){n=parseInt(n);document.getElementById('s3count').textContent=n;document.getElementById('s3statSq').textContent=n;document.getElementById('s3statTP').textContent=s3tp(n);document.getElementById('s3statNew').textContent=n===1?'4':'+3';var size=52,pad=20;var totalW=Math.max(680,(n*size)+(pad*2));var svg=document.getElementById('s3svg');svg.setAttribute('viewBox','0 0 '+totalW+' 100');var s='';for(var i=0;i<n;i++){var x=pad+(i*size),y=18;var last=(i===n-1)&&n>1;var col=last?'#D85A30':'#B4B2A9';var w=last?'3':'2.5';s+='<line x1="'+x+'" y1="'+y+'" x2="'+(x+size)+'" y2="'+y+'" stroke="'+col+'" stroke-width="'+w+'" stroke-linecap="round"/>';s+='<line x1="'+x+'" y1="'+(y+size)+'" x2="'+(x+size)+'" y2="'+(y+size)+'" stroke="'+col+'" stroke-width="'+w+'" stroke-linecap="round"/>';s+='<line x1="'+(x+size)+'" y1="'+y+'" x2="'+(x+size)+'" y2="'+(y+size)+'" stroke="'+col+'" stroke-width="'+w+'" stroke-linecap="round"/>';if(i===0)s+='<line x1="'+x+'" y1="'+y+'" x2="'+x+'" y2="'+(y+size)+'" stroke="'+col+'" stroke-width="'+w+'" stroke-linecap="round"/>'}svg.innerHTML=s;var t='<tr><th>Squares</th>';var show=Math.min(n,8);for(var i=1;i<=show;i++)t+='<th>'+i+'</th>';if(n>8)t+='<th>...</th><th>'+n+'</th>';t+='</tr><tr><th>Toothpicks</th>';for(var i=1;i<=show;i++)t+='<td class="purple">'+s3tp(i)+'</td>';if(n>8)t+='<td>...</td><td class="purple">'+s3tp(n)+'</td>';t+='</tr>';document.getElementById('s3table').innerHTML=t;document.getElementById('s3rule').innerHTML='Rule: Start with 4, then <strong>add 3</strong> for each new square. Formula: (3 x squares) + 1. For <strong>'+n+' squares</strong> = '+s3tp(n)+' toothpicks.'}
+function updateS3Nth(){var n=parseInt(document.getElementById('s3nth').value)||1;document.getElementById('s3nthResult').textContent=s3tp(n)}
+updateS3(3);
+function updateS4Nth(){var n=parseInt(document.getElementById('s4nth').value)||1;document.getElementById('s4result').textContent=2+(3*(n-1))}
+function updateS5(){var n=parseInt(document.getElementById('s5input').value)||1;document.getElementById('s5result').textContent=(n*3)+1}
+function updateS6(){var n=parseInt(document.getElementById('s6input').value)||1;document.getElementById('s6result').textContent=(n*2)+1}
+function revealS7(){document.getElementById('s7steps').classList.remove('hidden');document.getElementById('s7btn').style.display='none'}
+function updateS7(){var n=parseInt(document.getElementById('s7input').value)||1;document.getElementById('s7result').textContent=n*3}
+function updateS8(num){num=parseInt(num);document.getElementById('s8num').textContent=num;document.getElementById('s8addNum').textContent=num;document.getElementById('s8multNum').textContent=num;document.getElementById('s8addRule').textContent='Rule: Output = Input + '+num;document.getElementById('s8multRule').textContent='Rule: Output = Input x '+num;var aHTML='<tr><th>In</th><th>Out</th><th></th></tr>';var mHTML='<tr><th>In</th><th>Out</th><th></th></tr>';var aVals=[],mVals=[];for(var i=0;i<=9;i++){var aO=i+num,mO=i*num;aVals.push(aO);mVals.push(mO);var aD=i>0?'+'+num:'';var mD=i>0?'+'+(mO-mVals[i-1]):'';aHTML+='<tr><td>'+i+'</td><td class="teal">'+aO+'</td><td class="hint">'+aD+'</td></tr>';mHTML+='<tr><td>'+i+'</td><td class="purple">'+mO+'</td><td class="hint">'+mD+'</td></tr>'}document.getElementById('s8addTable').innerHTML=aHTML;document.getElementById('s8multTable').innerHTML=mHTML;var maxV=Math.max(mVals[9],aVals[9],1);var chartH=200;var chart=document.getElementById('s8chart');var bars='';for(var i=0;i<=9;i++){var aH=Math.round((aVals[i]/maxV)*(chartH-10));var mH=Math.round((mVals[i]/maxV)*(chartH-10));var left=Math.round((i/9)*88)+4;bars+='<div class="bar-group" style="left:'+left+'%"><div class="bar bar-add" style="height:'+Math.max(aH,2)+'px"></div><div class="bar bar-mult" style="height:'+Math.max(mH,2)+'px"></div><div class="chart-label">'+i+'</div></div>'}chart.innerHTML=bars;document.getElementById('s8addPattern').innerHTML='Addition: Goes up by <strong>'+num+'</strong> every time. The jumps are always the same size.';document.getElementById('s8multPattern').innerHTML='Multiplication: Goes up by <strong>'+num+'</strong> more each time. The jumps get <strong>bigger</strong> as the input grows.'}
+updateS8(4);
+function updateS10(num){num=parseInt(num);document.getElementById('s10num').textContent=num;document.getElementById('s10addNum').textContent=num;document.getElementById('s10multNum').textContent=num;var maxMJ=num*9;var maxH=100;var addB='',multB='';for(var i=1;i<=8;i++){var aH=Math.max(Math.round((num/maxMJ)*(maxH-14)),14);var mH=Math.max(Math.round(((num*i)/maxMJ)*(maxH-14)),14);addB+='<div class="jump-bar teal" style="height:'+aH+'px">+'+num+'</div>';multB+='<div class="jump-bar purple" style="height:'+mH+'px">+'+(num*i)+'</div>'}document.getElementById('s10addJumps').innerHTML=addB;document.getElementById('s10multJumps').innerHTML=multB;document.getElementById('s10diff').innerHTML='<strong>Addition</strong> goes up by '+num+' every single time. The bars are all the same height because the jump never changes. <strong>Multiplication</strong> jumps get bigger and bigger. From input 0 to 1 the jump is '+num+', but from input 8 to 9 the jump is '+(num*9)+'. That is why multiplication grows so much faster.'}
+updateS10(4);
+</script>
+</body>
+</html>
